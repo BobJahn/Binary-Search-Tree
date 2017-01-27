@@ -1,0 +1,153 @@
+<!–– Robert Jahn. Binary Search Tree implementation.
+––>
+
+<html>
+<style>
+
+</style>
+
+<head>
+<title>Binary Search Tree</title>
+
+
+
+</head>
+
+<body>
+	
+Add a value to the tree (-1000 to 1000).
+<input type="number" id="values" name="values" min="-1000" max="1000">
+<input type="submit" value="Add to the tree" onclick="add()">
+<input type="submit" value="Add random number to the tree" onclick="addRandom()">
+<input type="submit" value="Inorder" onclick="Inorder()">
+<input type="submit" value="Preorder" onclick="Preorder()">
+<input type="submit" value="Postorder" onclick="Postorder()">
+
+<h1 id="newValue">
+
+</h1>
+
+<h1 id="tree">
+
+</h1>
+
+
+
+<script>
+
+//Makeshift class definition for the BST.
+class Bst {
+	constructor() {
+		this.root = null;
+		this.output = "";
+	}
+
+	insert(num) {
+		console.log(num);
+		this.root = this.insert2(this.root, num);
+	}
+
+	insert2(node, num) {
+		if (node == null) {
+			node = new Node(num);
+		}
+		else {
+			if(num <= node.data) {
+				node.left = this.insert2(node.left, num);
+			}
+			else {
+				node.right = this.insert2(node.right, num);
+			}
+		}
+		return node;
+	}
+
+	inorder() {
+		this.output = "";
+		this.inorder2(this.root);
+		document.getElementById("tree").innerHTML = this.output;
+	}
+
+	inorder2(node) {
+		if (node != null) {
+			 this.inorder2(node.left);
+			 this.output = this.output + node.data + " ";
+			 this.inorder2(node.right);
+		 }
+	}
+	
+	preorder() {
+		this.output = "";
+		this.preorder2(this.root);
+		document.getElementById("tree").innerHTML = this.output;
+	}
+
+	preorder2(node) {
+		if (node != null) {
+			 this.output = this.output + node.data + " ";
+			 this.preorder2(node.left);
+			 this.preorder2(node.right);
+		 }
+	}
+	
+	postorder() {
+		this.output = "";
+		this.postorder2(this.root);
+		document.getElementById("tree").innerHTML = this.output;
+	}
+
+	postorder2(node) {
+		if (node != null) {
+			 this.postorder2(node.left);
+			 this.postorder2(node.right);
+			 this.output = this.output + node.data + " ";
+		 }
+	}
+	
+}
+
+//Makeshift class definition for Node.
+class Node {
+	constructor(num) {
+		this.data = num;
+		this.left = null;
+		this.right = null;
+	}
+}
+
+
+let tree = new Bst();
+
+function add() {
+	var num = document.getElementById("values").value;
+	document.getElementById("newValue").innerHTML = "Value Added: " + num;
+	tree.insert(num);
+	Inorder();
+}
+
+function addRandom() {
+	var num = Math.floor((Math.random() * 2000) - 1000);
+	document.getElementById("newValue").innerHTML = "Value Added: " + num;
+	tree.insert(num);
+	Inorder();
+}
+
+function Inorder() {
+	tree.inorder();
+}
+
+function Preorder() {
+	tree.preorder();
+}
+
+function Postorder() {
+	tree.postorder();
+}
+
+</script>
+
+
+
+</body>
+
+</html>
