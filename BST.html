@@ -19,6 +19,7 @@ Add a value to the tree (-1000 to 1000).
 <input type="number" id="values" name="values" min="-1000" max="1000">
 <input type="submit" value="Add to the tree" onclick="add()">
 <input type="submit" value="Add random number to the tree" onclick="addRandom()">
+<input type="submit" value="Add 10 random numbers to the tree" onclick="add10Random()">
 <input type="submit" value="Inorder" onclick="Inorder()">
 <input type="submit" value="Preorder" onclick="Preorder()">
 <input type="submit" value="Postorder" onclick="Postorder()">
@@ -129,6 +130,16 @@ function addRandom() {
 	var num = Math.floor((Math.random() * 2000) - 1000);
 	document.getElementById("newValue").innerHTML = "Value Added: " + num;
 	tree.insert(num);
+	Inorder();
+}
+
+function add10Random() {
+	document.getElementById("newValue").innerHTML = "Values Added: "
+	for(i = 0; i < 10; i++) {
+		var num = Math.floor((Math.random() * 2000) - 1000);
+		document.getElementById("newValue").innerHTML += num + " ";
+		tree.insert(num);
+	}
 	Inorder();
 }
 
