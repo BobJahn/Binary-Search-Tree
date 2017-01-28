@@ -3,7 +3,11 @@
 
 <html>
 <style>
-
+div.scroll {
+    overflow: scroll;
+	width: 1580px;
+    height: 100px;
+}
 </style>
 
 <head>
@@ -28,13 +32,22 @@ Add a value to the tree (-1000 to 1000).
 
 </h1>
 
-<h1 id="tree">
+<div class="scroll" id="tree">
 
-</h1>
+</div>
+
+<canvas id="graph" width="2000" height="2000" style="border:1px solid #d3d3d3;"></canvas>
 
 
 
 <script>
+
+var xCoord = 780;
+var yCoord = 50;
+var xParent = 780;
+var yParent = 50;
+var xMult = 4;
+var yMult = 1;
 
 //Makeshift class definition for the BST.
 class Bst {
@@ -45,18 +58,35 @@ class Bst {
 
 	insert(num) {
 		console.log(num);
+		xCoord = 780;
+		yCoord = 50;
+		xMult = 4;
+		yMult = 1;
 		this.root = this.insert2(this.root, num);
 	}
 
 	insert2(node, num) {
 		if (node == null) {
 			node = new Node(num);
+			drawNode(num);
 		}
 		else {
 			if(num <= node.data) {
+				xParent = xCoord;
+				yParent = yCoord;
+				xMult = xMult / 2;
+				yMult++;
+				xCoord = xCoord - 200*xMult;
+				yCoord = yCoord + 10*yMult;
 				node.left = this.insert2(node.left, num);
 			}
 			else {
+				xParent = xCoord;
+				yParent = yCoord;
+				xMult = xMult / 2;
+				yMult++;
+				xCoord = xCoord + 200*xMult;
+				yCoord = yCoord + 10*yMult;
 				node.right = this.insert2(node.right, num);
 			}
 		}
@@ -153,6 +183,26 @@ function Preorder() {
 
 function Postorder() {
 	tree.postorder();
+}
+
+function drawNode(num) {
+	var graph = document.getElementById("graph");
+	var context = graph.getContext("2d");
+	context.beginPath();
+	context.moveTo(xParent,yParent);
+	context.lineTo(xCoord,yCoord);
+	context.strokeStyle = "pink";
+	context.stroke();
+	
+	context.beginPath();
+	context.arc(xCoord, yCoord, 15, 0, 2*Math.PI);
+	context.fillStyle = "pink";
+	context.fill();
+	
+	context.beginPath();
+	context.fillStyle = "blue";
+	context.fillText(num, xCoord - 8, yCoord);
+	
 }
 
 </script>
