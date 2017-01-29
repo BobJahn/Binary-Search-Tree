@@ -24,6 +24,7 @@ Add a value to the tree (-1000 to 1000).
 <input type="submit" value="Add to the tree" onclick="add()">
 <input type="submit" value="Add random number to the tree" onclick="addRandom()">
 <input type="submit" value="Add 10 random numbers to the tree" onclick="add10Random()">
+<input type="submit" value="Delete a Number" onclick="remove()">
 <input type="submit" value="Inorder" onclick="Inorder()">
 <input type="submit" value="Preorder" onclick="Preorder()">
 <input type="submit" value="Postorder" onclick="Postorder()">
@@ -56,8 +57,76 @@ class Bst {
 		this.output = "";
 	}
 
+	redraw() {
+		var xCoord1 = 780;
+		var yCoord1 = 50;
+		var xMult1 = 4;
+		var yMult1 = 1;
+		var xParent1 = 780;
+		var yParent1 = 50;
+		var xCoord2 = 780;
+		var yCoord2 = 50;
+		var xMult2 = 4;
+		var yMult2 = 1;
+		var xParent2 = 780;
+		var yParent2 = 50;
+		this.redraw2(this.root, xCoord1, yCoord1, xMult1, yMult1, xParent1, yParent1, xCoord2, yCoord2, xMult2, yMult2, xParent2, yParent2);
+	}
+	
+	redraw2(node, xCoord1, yCoord1, xMult1, yMult1, xParent1, yParent1, xCoord2, yCoord2, xMult2, yMult2, xParent2, yParent2) {
+		if(node != null) {
+			var graph = document.getElementById("graph");
+			var context = graph.getContext("2d");
+			context.beginPath();
+			context.moveTo(xParent1,yParent1);
+			context.lineTo(xCoord1,yCoord1);
+			context.strokeStyle = "pink";
+			context.stroke();
+			
+			context.beginPath();
+			context.arc(xCoord1, yCoord1, 15, 0, 2*Math.PI);
+			context.fillStyle = "pink";
+			context.fill();
+			
+			context.beginPath();
+			context.fillStyle = "blue";
+			context.fillText(node.data, xCoord1 - 8, yCoord1);
+			
+			if(node.left != null){
+				var xParent1a = xCoord1;
+				var yParent1a = yCoord1;
+				var xMult1a = xMult1 / 2;
+				var yMult1a = yMult1 + 1;
+				var xCoord1a = xCoord1 - 200*xMult1a;
+				var yCoord1a = yCoord1 + 10*yMult1a;
+				var xParent2a = xCoord2;
+				var yParent2a = yCoord2;
+				var xMult2a = xMult2 / 2;
+				var yMult2a = yMult2 + 1;
+				var xCoord2a = xCoord2 - 200*xMult2a;
+				var yCoord2a = yCoord2 + 10*yMult2a;
+				this.redraw2(node.left, xCoord1a, yCoord1a, xMult1a, yMult1a, xParent1a, yParent1a, xCoord2a, yCoord2a, xMult2a, yMult2a, xParent2a, yParent2a);
+			}
+			
+			if(node.right != null){
+				var xParent1b = xCoord1;
+				var yParent1b = yCoord1;
+				var xMult1b = xMult1 / 2;
+				var yMult1b = yMult1 + 1;
+				var xCoord1b = xCoord1 + 200*xMult1b;
+				var yCoord1b = yCoord1 + 10*yMult1b;
+				var xParent2b = xCoord2;
+				var yParent2b = yCoord2;
+				var xMult2b = xMult2 / 2;
+				var yMult2b = yMult2 + 1;
+				var xCoord2b = xCoord2 + 200*xMult2b;
+				var yCoord2b = yCoord2 + 10*yMult2b;
+				this.redraw2(node.right, xCoord1b, yCoord1b, xMult1b, yMult1b, xParent1b, yParent1b, xCoord2b, yCoord2b, xMult2b, yMult2b, xParent2b, yParent2b);
+			}
+		}
+	}
+	
 	insert(num) {
-		console.log(num);
 		xCoord = 780;
 		yCoord = 50;
 		xMult = 4;
@@ -92,6 +161,23 @@ class Bst {
 		}
 		return node;
 	}
+	
+	remove(num) {
+		if(this.root == null) {
+			return false;
+		}
+		else if(this.root.data == num) {
+			var tempRoot = new Node(0);
+			tempRoot.left = this.root;
+			var result = this.root.removeNode(num, tempRoot);
+			this.root = tempRoot.left;
+			return result;
+		} 
+		else {
+			return this.root.removeNode(num, this.root);
+		}
+	}
+
 
 	inorder() {
 		this.output = "";
@@ -144,6 +230,63 @@ class Node {
 		this.left = null;
 		this.right = null;
 	}
+	
+	removeNode(num, node) {
+		if(num < this.data) {
+			if(this.left != null) {
+				return this.left.removeNode(num, this);
+			}
+			else {
+				return false;
+			}
+		}
+		else if(num > this.data) {
+			if(this.right != null) {
+				return this.right.removeNode(num, this);
+			}
+			else {
+				return false;
+			}
+		}
+		else {
+			if(this.left != null && this.right != null) {
+				this.data = this.right.getMin();		// Get the new root for this subtree.
+				this.right.removeNode(this.data, this); // Delete the node with the old value to prevent duplication.
+			}
+			else if(node.left === this) {
+				if(this.left != null) {
+					node.left = this.left;
+				}
+				else if(this.right != null) {
+					node.left = this.right;
+				}
+				else {
+					node.left = null;
+				}
+			}
+			else if(node.right === this) {
+				if(this.left != null) {
+					node.right = this.left;
+				}
+				else if(this.right != null) {
+					node.right = this.right;
+				}
+				else {
+					node.right = null;
+				}
+			}
+			return true;
+		}
+	}
+	
+	getMin() {
+		if(this.left == null) {
+			return this.data;
+		}
+		else {
+			return this.left.getMin();
+		}
+	}
 }
 
 
@@ -151,6 +294,7 @@ let tree = new Bst();
 
 function add() {
 	var num = document.getElementById("values").value;
+	num = parseInt(num);
 	document.getElementById("newValue").innerHTML = "Value Added: " + num;
 	tree.insert(num);
 	Inorder();
@@ -170,6 +314,19 @@ function add10Random() {
 		document.getElementById("newValue").innerHTML += num + " ";
 		tree.insert(num);
 	}
+	Inorder();
+}
+
+function remove() {
+	var num = document.getElementById("values").value;
+	var removed = tree.remove(num);
+	if(removed) {
+		document.getElementById("newValue").innerHTML = "Value Removed: " + num;
+	}
+	else {
+		document.getElementById("newValue").innerHTML = "Value not found! No Deletion!";
+	}
+	drawAllNodes();
 	Inorder();
 }
 
@@ -202,7 +359,13 @@ function drawNode(num) {
 	context.beginPath();
 	context.fillStyle = "blue";
 	context.fillText(num, xCoord - 8, yCoord);
-	
+}
+
+function drawAllNodes() {
+	var graph = document.getElementById("graph");
+	var context = graph.getContext("2d");
+	context.clearRect(0, 0, 2000, 2000);
+	tree.redraw();
 }
 
 </script>
