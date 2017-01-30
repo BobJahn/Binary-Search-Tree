@@ -1,4 +1,11 @@
-<!–– Robert Jahn. Binary Search Tree implementation.
+<!–– Robert Jahn. Binary Search Tree implementation. Includes the logic for crafting a bst and also draw a graphical representation.
+	OOP has been used to retain the structure of the tree. 
+	
+	The user may add individual values, random values, and large groups of random values. The user may also delete elements. If the element is not found,
+	an error message is give nand the tree remains unchanged.
+	
+	I have also included a method which rebalances the tree. This is done by taking the elements inorder, and adding them back in a specific manner.
+	Recursion is used to do this rather efficiently.
 ––>
 
 <html>
@@ -22,12 +29,13 @@ div.scroll {
 Add a value to the tree (-1000 to 1000).
 <input type="number" id="values" name="values" min="-1000" max="1000">
 <input type="submit" value="Add to the tree" onclick="add()">
+<input type="submit" value="Delete a Number" onclick="remove()">
 <input type="submit" value="Add random number to the tree" onclick="addRandom()">
 <input type="submit" value="Add 10 random numbers to the tree" onclick="add10Random()">
-<input type="submit" value="Delete a Number" onclick="remove()">
-<input type="submit" value="Inorder" onclick="Inorder()">
-<input type="submit" value="Preorder" onclick="Preorder()">
-<input type="submit" value="Postorder" onclick="Postorder()">
+<input type="submit" value="Balance" onclick="balanceTree()">
+<input type="submit" value="Inorder" onclick="inorder()">
+<input type="submit" value="Preorder" onclick="preorder()">
+<input type="submit" value="Postorder" onclick="postorder()">
 
 <h1 id="newValue">
 
@@ -178,7 +186,6 @@ class Bst {
 		}
 	}
 
-
 	inorder() {
 		this.output = "";
 		this.inorder2(this.root);
@@ -292,19 +299,20 @@ class Node {
 
 let tree = new Bst();
 
+// Functions to be called by buttons from html portion.
 function add() {
 	var num = document.getElementById("values").value;
 	num = parseInt(num);
 	document.getElementById("newValue").innerHTML = "Value Added: " + num;
 	tree.insert(num);
-	Inorder();
+	inorder();
 }
 
 function addRandom() {
 	var num = Math.floor((Math.random() * 2000) - 1000);
 	document.getElementById("newValue").innerHTML = "Value Added: " + num;
 	tree.insert(num);
-	Inorder();
+	inorder();
 }
 
 function add10Random() {
@@ -314,7 +322,7 @@ function add10Random() {
 		document.getElementById("newValue").innerHTML += num + " ";
 		tree.insert(num);
 	}
-	Inorder();
+	inorder();
 }
 
 function remove() {
@@ -327,18 +335,18 @@ function remove() {
 		document.getElementById("newValue").innerHTML = "Value not found! No Deletion!";
 	}
 	drawAllNodes();
-	Inorder();
+	inorder();
 }
 
-function Inorder() {
+function inorder() {
 	tree.inorder();
 }
 
-function Preorder() {
+function preorder() {
 	tree.preorder();
 }
 
-function Postorder() {
+function postorder() {
 	tree.postorder();
 }
 
@@ -366,6 +374,36 @@ function drawAllNodes() {
 	var context = graph.getContext("2d");
 	context.clearRect(0, 0, 2000, 2000);
 	tree.redraw();
+}
+
+function balanceTree() {
+	tree.inorder();
+	var values = tree.output.split(" ");
+	values.splice(-1); // Have an extra blank element at the end of the array. Splice it off.
+	var length = values.length;
+	var mid = Math.floor(length / 2);
+	tree = new Bst();
+	
+	tree.root = rebalance(values, 0, length - 1);
+	
+	drawAllNodes();
+	inorder();
+}
+
+function rebalance(values, start, end) {
+	if(start > end) {
+		return null;
+	}
+	
+	
+	var mid = Math.floor((start + end) / 2);
+	var node = new Node(parseInt(values[mid]));
+
+	
+	node.left = rebalance(values, start, mid - 1);
+	node.right = rebalance(values, mid + 1, end);
+	
+	return node;
 }
 
 </script>
