@@ -304,7 +304,7 @@ class Node {
 	// Helper method to find the minimum of a subtree. Needed when we delete a node with two children.
 	// Will be called on the right subtree in that situation.
 	// In the future, I will also implement a getMax() method to make sure that the tree does not become
-	// too inbalanced by constantly deleting the from the right subtree. getMax() would be valled on the 
+	// too imbalanced by constantly deleting the from the right subtree. getMax() would be valled on the 
 	// subtree. Perhaps some kind of alternating coin-flip to ensure some semblance of tree balance.
 	getMin() {
 		if(this.left == null) {
